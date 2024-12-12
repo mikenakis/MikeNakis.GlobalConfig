@@ -1,0 +1,17 @@
+<Project>
+	<PropertyGroup>
+		<MikeNakisAnalysisRules>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../contentFiles/cs/any/MikeNakisAnalysisRules/'))</MikeNakisAnalysisRules>
+	</PropertyGroup>
+	<!--PEARL: UseHardlinksIfPossible:True does not work, even when building outside Visual Studio: the file gets
+	           copied, not linked, and ErrorIfLinkFails:True has no effect. -->
+	<!--PEARL: UseSymboliclinksIfPossible:True does in fact create a symlink, but:
+				a) the file becomes writable, even though the file targeted by the symbolic link is not.
+				a) the file has no effect. (Apparently the tooling does not respect symlinks.) -->
+	<Target Name="CopyEditorConfig" BeforeTargets="BeforeBuild">
+		<ItemGroup>
+			<EditorConfigFilesToCopy Include="$(MikeNakisAnalysisRules).editorconfig" />
+		</ItemGroup>
+		<Copy SourceFiles="@(EditorConfigFilesToCopy)" DestinationFolder="$(ProjectDir)" SkipUnchangedFiles="False"
+			OverwriteReadOnlyFiles="True" ContinueOnError="ErrorAndStop" />
+	</Target>
+</Project>
