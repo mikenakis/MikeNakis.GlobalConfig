@@ -1,0 +1,5 @@
+<Project>
+	<PropertyGroup>
+		<MikeNakisConfigFiles>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../'))</MikeNakisConfigFiles>
+	</PropertyGroup>
+</Project>

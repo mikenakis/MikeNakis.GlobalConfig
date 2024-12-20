@@ -1,19 +1,62 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<!--<Project Sdk="Microsoft.NET.Sdk">-->
+<Project Sdk="Microsoft.Build.NoTargets/3.7.56">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-	<!--
-		<LangVersion>12</LangVersion>
-		<ImplicitUsings>Disable</ImplicitUsings>
-		<Nullable>Enable</Nullable>
-
-		<AnalysisLevel>latest-Recommended</AnalysisLevel>
-		<RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
-		<RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
-
-		<WarningLevel>9999</WarningLevel>
-	-->
 	</PropertyGroup>
 
+	<ItemGroup>
+		<None Include=".github\workflows\github-workflow.yml" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Reference: https://learn.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target -->
+		<PackageId>MikeNakis.GlobalConfig</PackageId>
+		<Title>Mike Nakis GlobalConfig</Title>
+		<Description>My .globalconfig files</Description>
+		<Copyright>Copyright &#169; Mike Nakis. All rights reserved.</Copyright>
+		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.GlobalConfig.git</RepositoryUrl>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<PackageIcon>MikeNakis.GlobalConfig-Logo.png</PackageIcon>
+		<Version>$(RELEASE_VERSION)</Version>
+		<DevelopmentDependency>True</DevelopmentDependency>
+		<Authors>MikeNakis</Authors>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<!--<PackageLicenseExpression>MIT</PackageLicenseExpression>-->
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageProjectUrl>https://github.com/mikenakis/MikeNakis.GlobalConfig</PackageProjectUrl>
+		<PackageTags>globalconfig; source; compiletime</PackageTags>
+		<!-- PEARL: the SuppressDependenciesWhenPacking magical incantation prevents warning NU5128 and is necessary even
+		            when using the Microsoft.Build.NoTargets Sdk. -->
+		<SuppressDependenciesWhenPacking>True</SuppressDependenciesWhenPacking>
+		<!-- The following are not necessary because we use the Microsoft.Build.NoTargets Sdk -->
+		<!--<IncludeBuildOutput>False</IncludeBuildOutput>
+		<IncludeSymbols>False</IncludeSymbols>-->
+	</PropertyGroup>
+
+	<!-- From https://fullstackhero.medium.com/be0e7fd040a2 -->
+	<Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
+		<PropertyGroup>
+			<File>RELEASE-NOTES.txt</File>
+		</PropertyGroup>
+		<!-- PEARL: The ReadLinesFromFile tag will silently fail if the file does not exist.
+		            To correct this, we explicitly check whether the file exists, and deliberately fail if not. -->
+		<Error Condition="!Exists('$(File)')" Text="$(File) does not exist!" />
+		<ReadLinesFromFile File="$(File)">
+			<Output TaskParameter="Lines" ItemName="ReleaseNoteLines" />
+		</ReadLinesFromFile>
+		<PropertyGroup>
+			<PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
+		</PropertyGroup>
+	</Target>
+
+	<ItemGroup>
+		<None Include="*.globalconfig" Pack="true" PackagePath="/" />
+		<None Include="MikeNakis.GlobalConfig-Logo.png" Pack="true" PackagePath="/" />
+		<None Include="build/*" Pack="true" PackagePath="build/" />
+		<None Include="LICENSE.md" Pack="true" PackagePath="/" />
+		<None Include="README-for-nuget.md" Pack="true" PackagePath="/README.md" />
+	</ItemGroup>
 
 </Project>

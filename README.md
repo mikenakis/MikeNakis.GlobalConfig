@@ -1,20 +1,23 @@
-# MikeNakis.GlobalConfig<br><sub><sup>My very own™ GlobalConfig for DotNet.</sub></sup>
+# MikeNakis.GlobalConfig<br><sup><sub>My very own™ GlobalConfig for DotNet.</sub></sup>
 
-The sole purpose of this repository is to contain some `.globalconfig` files.
+<p align="center">
+  <img title="MikeNakis.GlobalConfig Logo" src="MikeNakis.GlobalConfig-Logo.svg" width="256" />
+</p>
 
-Currently, this repository is meant to be cloned side-by-side with my other projects, so that each project file can contain inclusions like the following:
+[![Build](https://github.com/mikenakis/MikeNakis.GlobalConfig/actions/workflows/github-workflow.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.GlobalConfig/actions/workflows/github-workflow.yml)
+
+This repository contains my `.globalconfig` files.
+
+To make use of it, add the following to your .csproj file:
 
 ```xml
 <ItemGroup>
-    <GlobalAnalyzerConfigFiles Include="../../MikeNakis.GlobalConfig/AllCode.globalconfig" />
-    <GlobalAnalyzerConfigFiles Include="../../MikeNakis.GlobalConfig/ProductionCode.globalconfig" />
+    <PackageReference Include="MikeNakis.GlobalConfig" Version="1.0.*" />
+    <!-- PEARL: if any of these files is not found, msbuild responds with silent failure. -->
+    <GlobalAnalyzerConfigFiles Include="$(MikeNakisConfigFiles)AllCode.globalconfig" />
+    <GlobalAnalyzerConfigFiles Include="$(MikeNakisConfigFiles)ProductionCode.globalconfig" />
 </ItemGroup>
 ```
-
-This repository also contains a `.csproj` file, so that, by including it within other solutions, Visual Studio will consider this repository among other repositories to pull from / push to, and will allow us to view, edit, search etc. the files in this repository.
-
-TODO: Turn this into a NuGet package which, when referenced by a project, supplies the globalconfig files
-so that the project does not need to reference an external file.
 
 ## License
 
